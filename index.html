@@ -71,9 +71,15 @@ function followMotion(){
 
 let embeddedFiles;
 modelStatus.textContent='正在接收内置模型，摄像头可先使用挥手控制。';
-function embeddedBytes(name){
-  const data=embeddedFiles[name];
-  return fflate.gunzipSync(decodeBase64(data))
+async function embeddedBytes(name){
+  const bytes=decodeBase64(embeddedFiles[name]);
+  if(typeof DecompressionStream==='function'){
+    try{
+      const stream=new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
+      return new Uint8Array(await new Response(stream).arrayBuffer())
+    }catch(error){console.warn('Native model decompression failed',error)}
+  }
+  return fflate.gunzipSync(bytes)
 }
 function decodeBase64(data){
   if(typeof Uint8Array.fromBase64==='function')return Uint8Array.fromBase64(data);
@@ -86,18 +92,20 @@ async function initializePrecision(){
   if(!embeddedFiles){modelStatus.textContent='正在接收网页内置模型，摄像头可先使用轻量手势。';return}
   pendingLoad=true;retry.hidden=true;modelStatus.textContent='正在初始化内置手势模型…';
   const urls=[];
-  function localURL(name,type){
-    const url=URL.createObjectURL(new Blob([embeddedBytes(name)],{type}));
+  async function localURL(name,type){
+    const url=URL.createObjectURL(new Blob([await embeddedBytes(name)],{type}));
     urls.push(url);return url
   }
   try{
-    const vision=await import(localURL('vision.mjs','text/javascript'));
-    const wasm={
-      wasmBinaryPath:localURL('vision_wasm_nosimd_internal.wasm','application/wasm'),
-      wasmLoaderPath:localURL('vision_wasm_nosimd_internal.js','text/javascript')
-    };
+    const [vision,wasmBinaryPath,wasmLoaderPath,modelAssetBuffer]=await Promise.all([
+      localURL('vision.mjs','text/javascript').then(url=>import(url)),
+      localURL('vision_wasm_nosimd_internal.wasm','application/wasm'),
+      localURL('vision_wasm_nosimd_internal.js','text/javascript'),
+      embeddedBytes('hand.task')
+    ]);
+    const wasm={wasmBinaryPath,wasmLoaderPath};
     detector=await vision.HandLandmarker.createFromOptions(wasm,{
-      baseOptions:{modelAssetBuffer:embeddedBytes('hand.task'),delegate:'CPU'},runningMode:'VIDEO',numHands:1,
+      baseOptions:{modelAssetBuffer,delegate:'CPU'},runningMode:'VIDEO',numHands:1,
       minHandDetectionConfidence:.45,minHandPresenceConfidence:.45,minTrackingConfidence:.45
     });
     modelStatus.textContent='内置手势模型已就绪';
