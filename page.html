@@ -86,9 +86,10 @@ async function initializePrecision(){
   }
   try{
     const vision=await import(localURL('vision.mjs','text/javascript'));
-    const wasm=await vision.FilesetResolver.forVisionTasks('');
-    wasm.wasmBinaryPath=localURL(wasm.wasmBinaryPath.split('/').pop(),'application/wasm');
-    wasm.wasmLoaderPath=localURL(wasm.wasmLoaderPath.split('/').pop(),'text/javascript');
+    const wasm={
+      wasmBinaryPath:localURL('vision_wasm_nosimd_internal.wasm','application/wasm'),
+      wasmLoaderPath:localURL('vision_wasm_nosimd_internal.js','text/javascript')
+    };
     detector=await vision.HandLandmarker.createFromOptions(wasm,{
       baseOptions:{modelAssetBuffer:embeddedBytes('hand.task'),delegate:'CPU'},runningMode:'VIDEO',numHands:1,
       minHandDetectionConfidence:.45,minHandPresenceConfidence:.45,minTrackingConfidence:.45
@@ -159,6 +160,7 @@ el('cam').onclick=async()=>{
 embeddedFiles=/* EMBEDDED_VISION_FILES */ {};
 setTimeout(initializePrecision,0);
 </script></html>
+
 
 
 
