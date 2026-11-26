@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>光束心境 · 粒子爱心</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#09090f;color:#f7f3fa;font:16px/1.5 Inter,"Microsoft YaHei",sans-serif}header{height:76px;border-bottom:1px solid #29252f;display:flex;align-items:center;justify-content:space-between;padding:0 5vw}.brand{display:flex;gap:13px;align-items:center;font-weight:700;letter-spacing:2px}.logo{background:#ff598e;color:#260d1a;border-radius:12px;width:38px;height:38px;display:grid;place-items:center;font-size:26px}.state,small{font-size:13px;color:#b5aebd}.state:before{content:"";display:inline-block;width:7px;height:7px;border-radius:100%;background:#b5acbb;margin-right:9px}.state.on:before{background:#71e8b0}main{max-width:1580px;margin:auto;padding:32px 5vw}.layout{display:grid;grid-template-columns:minmax(0,1fr) 296px;gap:20px}.stage,aside{border:1px solid #312b37;border-radius:20px;background:#15131b}.stage{position:relative;min-height:560px;overflow:hidden;background:radial-gradient(ellipse at 50% 50%,#291322,#100d17  sixty%,#0e0c13);background:radial-gradient(ellipse at 50% 52%,#291222,#100d17 62%,#0e0c13)}canvas{display:block;width:100%;height:100%;position:absolute;inset:0;touch-action:none;cursor:grab}.cap,.foot{position:absolute;pointer-events:none;left:26px}.cap{top:23px}.cap h1{font-size:clamp(26px,3vw,44px);letter-spacing:-1px;margin:4px 0;font-weight:620}.eyebrow{font:12px/1.5 Consolas,monospace;letter-spacing:3px;color:#fc8cb0}.foot{bottom:20px;color:#a99cb0;font-size:13px}.meter{position:absolute;bottom:20px;right:24px;font:13px monospace;color:#ff96b7}aside{padding:24px;display:flex;flex-direction:column;gap:18px}h2{font-size:21px;margin:0}h3{font-size:14px;margin:0 0 10px;color:#d7d0de}button{cursor:pointer;background:#231f2a;border:1px solid #38313f;color:#e7deed;border-radius:10px;font:inherit;padding:10px}button:hover{border-color:#d1799a}button:focus-visible,input:focus-visible{outline:2px solid #ff92b7;outline-offset:3px}.cam{width:100%;background:#ff6498;color:#210e18;font-weight:700;border:0;margin:10px 0}.status{font-size:13px;color:#bfb5c8;margin:0;min-height:20px}.row{display:flex;gap:6px}.row button{flex:1;font-size:14px}.row .sel{color:#ff9abe;border-color:#aa5274;background:#3a202e}.panel{border-top:1px solid #322b39;padding-top:16px}.swatch{width:32px;height:32px;border:5px solid #15131b;border-radius:50%;padding:0;margin-right:9px}.swatch.sel{outline:1px solid #e4d6e6}.scale{display:flex;justify-content:space-between}.scale output{color:#ffa0bf;font:14px monospace}input{width:100%;accent-color:#ff719e}dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:7px 12px;font-size:14px}dt{color:#ebe2ed}dd{margin:0;color:#aea3b6}.preview{position:absolute;right:14px;top:16px;width:clamp(96px,20%,160px);overflow:hidden;border-radius:10px;background:#110e15}.preview video{display:block;width:100%;transform:scaleX(-1)}.preview canvas{transform:scaleX(-1);pointer-events:none}.preview[hidden]{display:none}@media(max-width:780px){header{height:62px}main{padding:16px}.layout{grid-template-columns:1fr}.stage{min-height:440px;height:59svh}.cap{left:17px;top:15px}.foot{left:16px;font-size:12px}aside{padding:20px}.meter{right:14px}.cap h1{font-size:26px}}
+</style><header><div class="brand"><span class="logo" aria-hidden="true">♥</span>光束心境</div><span class="state" id="state">自由交互</span></header><main><div class="layout"><section class="stage"><canvas id="view" aria-label="可旋转、缩放和变形的光束粒子爱心"></canvas><div class="cap"><span class="eyebrow" lang="en">PARTICLE STUDIO</span><h1>光束粒子爱心</h1></div><div id="preview" class="preview" hidden><video id="video" playsinline muted></video><canvas id="overlay" aria-hidden="true"></canvas></div><div class="foot">拖动旋转 · 双指或滚轮缩放</div><div class="meter" id="modeLabel">凝聚</div></section><aside><div><h2>交互控制</h2><button class="cam" id="cam">开启摄像头</button><p class="status" id="status" role="status">开启后，将一只手放入画面。</p><p class="status" id="modelStatus"></p><button id="retry" hidden>重试精确识别</button></div><div class="panel"><h3>粒子形态</h3><div class="row" id="modes"></div></div><div><h3>光束色彩</h3><div id="colors"></div></div><div><div class="scale"><h3><label for="zoom">爱心缩放</label></h3><output id="value" for="zoom">100%</output></div><input id="zoom" type="range" min="55" max="160" value="100"></div><div><div class="scale"><h3><label for="sensitivity">手势灵敏度</label></h3><output id="gainValue" for="sensitivity">1.7×</output></div><input id="sensitivity" type="range" min="0.8" max="2.5" step="0.1" value="1.7"></div><div class="panel"><h3>手势指南</h3><dl><dt>两指开合</dt><dd>拇指与食指控制大小</dd><dt>移动手掌</dt><dd>左右转向，上下倾斜</dd><dt>张开手掌</dt><dd>粒子逐渐散开</dd><dt>握拳</dt><dd>粒子重新凝聚</dd></dl></div><a style="color:#ff9ebe;text-underline-offset:4px" href="https://github.com/Ming-Xixi/heartbeam-gesture-studio/archive/refs/heads/main.zip" download>下载完整源码</a></aside></div></main>
+<script>
+const el=id=>document.getElementById(id),canvas=el('view'),ctx=canvas.getContext('2d'),video=el('video');
+const names=['凝聚','脉动','星散'],palette=[['蔷薇粉',337],['冰川蓝',198],['紫罗兰',270],['琥珀金',35]];
+let mode=0,hue=337,scale=1,spread=0,ax=0,ay=0,tx=0,ty=0,w=0,h=0;
+function chooseMode(i){mode=i;el('modeLabel').textContent=names[i];[...el('modes').children].forEach((b,j)=>{b.classList.toggle('sel',i===j);b.setAttribute('aria-pressed',i===j)})}
+names.forEach((name,i)=>{let b=document.createElement('button');b.textContent=name;b.onclick=()=>chooseMode(i);el('modes').append(b)});chooseMode(0);
+palette.forEach(([name,v],i)=>{let b=document.createElement('button');b.className='swatch';b.style.background='hsl('+v+' 95% 70%)';b.title=name;b.setAttribute('aria-label',name);b.onclick=()=>{hue=v;[...el('colors').children].forEach(x=>{x.classList.toggle('sel',x===b);x.setAttribute('aria-pressed',x===b)})};el('colors').append(b);if(!i)b.click()});
+function zoom(n){const v=Math.round(Math.max(55,Math.min(160,n)));el('zoom').value=v;el('value').textContent=v+'%'}
+el('zoom').oninput=e=>zoom(+e.target.value);
+let gain=1.7;el('sensitivity').oninput=e=>{gain=Number(e.target.value);el('gainValue').textContent=gain.toFixed(1)+'×'};
+const points=[],stars=Array.from({length:135},()=>[Math.random(),Math.random(),Math.random()]);
+for(let i=0;i<5600;i++){const a=Math.random()*Math.PI*2,b=Math.random()*Math.PI,k=Math.sin(b),r=Math.random()<.72?1:Math.sqrt(Math.random());points.push({x:Math.sin(a)**3*k*r,y:-(13*Math.cos(a)-5*Math.cos(2*a)-2*Math.cos(3*a)-Math.cos(4*a))/16*k*r,z:Math.cos(b)*.36*r,a:Math.random()*6.28,v:Math.random(),band:Math.floor(Math.random()*9)})}
+new ResizeObserver(()=>{w=canvas.clientWidth;h=canvas.clientHeight;let d=Math.min(devicePixelRatio,2);canvas.width=w*d;canvas.height=h*d;ctx.setTransform(d,0,0,d,0,0)}).observe(canvas);
+const bands=Array.from({length:9},()=>[]);points.forEach((p,i)=>{p.ray=i%16===0;bands[p.band].push(p)});
+let previous=0;function frame(ms){const t=ms*.001;ctx.clearRect(0,0,w,h);if(!w){requestAnimationFrame(frame);return}
+ctx.fillStyle='#c3a7c3';for(let [x,y,v] of stars){ctx.globalAlpha=.13+.32*v;ctx.fillRect(x*w,y*h,1+v,1+v)}ctx.globalAlpha=1;
+const dt=Math.min(80,Math.max(1,ms-previous));previous=ms;const response=1-Math.exp(-dt/(gestureTracking?34:85));ax+=(tx-ax)*response;ay+=(ty-ay)*response;scale+=(Number(el('zoom').value)/100-scale)*response;spread+=((mode===2?1:0)-spread)*(1-Math.exp(-dt/145));
+const rot=ax+Math.sin(t*.42)*.15,tilt=ay+.08,c=Math.cos(rot),s=Math.sin(rot),cc=Math.cos(tilt),ss=Math.sin(tilt),size=Math.min(w*.37,h*.365)*scale*(1+(mode===1?.085:.019)*Math.sin(t*(mode===1?4:2))),cx=w*.5,cy=h*.51;
+ctx.globalCompositeOperation='lighter';
+for(let j=0;j<9;j++){ctx.fillStyle='hsla('+(hue+(j-4)*3)+' 100% '+(49+j*4)+'% / '+(.36+j*.048)+')';ctx.strokeStyle='hsla('+hue+' 98% 64% / .25)';ctx.beginPath();
+for(const p of bands[j]){let drift=spread*(.12+p.v*.65),x=p.x*(1+drift)+drift*Math.sin(p.a+t*.35),y=p.y*(1+drift)+drift*Math.cos(p.a+t*.4),z=p.z+drift*Math.sin(p.a*2),depth=z*c-x*s,X=cx+(x*c+z*s)*size,Y=cy+(y*cc-depth*ss)*size,R=(.6+p.v*1.25)*Math.max(.65,size/220);ctx.fillRect(X,Y,R,R);
+if(p.ray){let ray=(.015+p.v*.10)*(.75+.25*Math.sin(t*1.6+p.a));ctx.moveTo(X,Y);ctx.lineTo(X+(X-cx)*ray,Y+(Y-cy)*ray)}
+}ctx.stroke()}ctx.globalCompositeOperation='source-over';requestAnimationFrame(frame)}requestAnimationFrame(frame);
+const pointers=new Map();let gap=0;const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
+canvas.onpointerdown=e=>{canvas.setPointerCapture(e.pointerId);pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pointers.size===2)gap=dist(...pointers.values())};
+canvas.onpointermove=e=>{const old=pointers.get(e.pointerId);if(!old)return;const p={x:e.clientX,y:e.clientY};pointers.set(e.pointerId,p);if(pointers.size===2){const g=dist(...pointers.values());if(gap>1)zoom(+el('zoom').value*g/gap);gap=g}else{tx+=(p.x-old.x)*.009;ty=Math.max(-1,Math.min(1,ty+(p.y-old.y)*.008))}};
+canvas.onpointerup=canvas.onpointercancel=e=>pointers.delete(e.pointerId);canvas.addEventListener('wheel',e=>{e.preventDefault();zoom(+el('zoom').value-Math.sign(e.deltaY)*5)},{passive:false});
+const preview=el('preview'),overlay=el('overlay'),ink=overlay.getContext('2d');
+let gestureTracking=false,stream=null,detector=null,session=0,gesture='',since=0,held='',timer;
+const message=text=>{el('status').textContent=text};
+function stopCamera(text){
+  session++;previousFrame=null;gestureTracking=false;clearTimeout(timer);
+  if(stream)stream.getTracks().forEach(track=>track.stop());
+  stream=null;video.srcObject=null;preview.hidden=true;
+  gesture=held='';el('cam').textContent='开启摄像头';el('state').textContent='自由交互';
+  el('state').classList.remove('on');message(text)
+}
+const modelStatus=el('modelStatus'),retry=el('retry');
+let pendingLoad=null;
+const motionCanvas=document.createElement('canvas');
+motionCanvas.width=80;motionCanvas.height=60;
+const motion=motionCanvas.getContext('2d',{willReadFrequently:true});
+let previousFrame=null;
+function followMotion(){
+  motion.drawImage(video,0,0,80,60);
+  const frame=motion.getImageData(0,0,80,60).data;
+  let count=0,sumX=0,sumY=0;
+  if(previousFrame){
+    for(let i=0;i<4800;i++){
+      const j=i*4;
+      const difference=Math.abs(frame[j]-previousFrame[j])+Math.abs(frame[j+1]-previousFrame[j+1])+Math.abs(frame[j+2]-previousFrame[j+2]);
+      if(difference>90){count++;sumX+=i%80;sumY+=Math.floor(i/80)}
+    }
+  }
+  previousFrame=frame;
+  if(count<14||count>2200)return;
+  gestureTracking=true;
+  const x=sumX/count/80,y=sumY/count/60;
+  tx=(.5-x)*4*gain;zoom(100+(.5-y)*105*gain)
+}
+/* INLINE_GZIP_DECODER */
+const embeddedFiles=/* EMBEDDED_VISION_FILES */ {};
+function embeddedBytes(name){
+  const data=embeddedFiles[name];
+  return fflate.gunzipSync(decodeBase64(data))
+}
+function decodeBase64(data){
+  if(typeof Uint8Array.fromBase64==='function')return Uint8Array.fromBase64(data);
+  const binary=atob(data),bytes=new Uint8Array(binary.length);
+  for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);
+  return bytes
+}
+async function initializePrecision(){
+  if(detector||pendingLoad)return;
+  pendingLoad=true;retry.hidden=true;modelStatus.textContent='正在初始化内置手势模型…';
+  const urls=[];
+  function localURL(name,type){
+    const url=URL.createObjectURL(new Blob([embeddedBytes(name)],{type}));
+    urls.push(url);return url
+  }
+  try{
+    const vision=await import(localURL('vision.mjs','text/javascript'));
+    const wasm=await vision.FilesetResolver.forVisionTasks('');
+    wasm.wasmBinaryPath=localURL(wasm.wasmBinaryPath.split('/').pop(),'application/wasm');
+    wasm.wasmLoaderPath=localURL(wasm.wasmLoaderPath.split('/').pop(),'text/javascript');
+    detector=await vision.HandLandmarker.createFromOptions(wasm,{
+      baseOptions:{modelAssetBuffer:embeddedBytes('hand.task'),delegate:'CPU'},runningMode:'VIDEO',numHands:1,
+      minHandDetectionConfidence:.45,minHandPresenceConfidence:.45,minTrackingConfidence:.45
+    });
+    modelStatus.textContent='内置手势模型已就绪';
+  }catch(error){
+    modelStatus.textContent='内置模型初始化失败，可重试或使用轻量控制。';retry.hidden=false;
+    console.warn('Hand tracking initialization',error)
+  }finally{urls.forEach(url=>URL.revokeObjectURL(url));pendingLoad=false}
+}
+retry.onclick=initializePrecision;
+setTimeout(initializePrecision,0);
+function lightMode(){
+  previousFrame=null;gestureTracking=false;el('state').textContent='轻量手势';
+  message('固定摄像头，左右挥手转向，上下挥手缩放。')
+}
+function trackHand(p,t){
+  overlay.width=video.videoWidth;overlay.height=video.videoHeight;
+  if(!p){gestureTracking=false;gesture=held='';el('state').textContent='寻找手掌';message('将整只手伸进右上角预览框，手腕也要入镜。');return}
+  gestureTracking=true;el('state').textContent='正在跟随手掌';
+  for(const [a,b] of [[0,1],[1,2],[2,3],[3,4],[0,5],[5,6],[6,7],[7,8],[5,9],[9,10],[10,11],[11,12],[9,13],[13,14],[14,15],[15,16],[13,17],[0,17],[17,18],[18,19],[19,20]]){
+    ink.beginPath();ink.moveTo(p[a].x*overlay.width,p[a].y*overlay.height);
+    ink.lineTo(p[b].x*overlay.width,p[b].y*overlay.height);
+    ink.strokeStyle='#88ffcb';ink.lineWidth=3;ink.stroke()
+  }
+  for(const q of p){ink.beginPath();ink.arc(q.x*overlay.width,q.y*overlay.height,4,0,Math.PI*2);ink.fillStyle='#fff';ink.fill()}
+  const distance=(a,b)=>Math.hypot((p[a].x-p[b].x)*video.videoWidth,(p[a].y-p[b].y)*video.videoHeight);
+  const palm=Math.max(1,distance(0,9));
+  zoom(100+(distance(4,8)/palm-.65)*78*gain);
+  tx=(.5-p[9].x)*4*gain;ty=Math.max(-1.4,Math.min(1.4,(p[9].y-.5)*2.6*gain));
+  const extended=[8,12,16,20].filter(i=>distance(i,0)>distance(i-2,0)*1.13).length;
+  const next=extended===4?'open':extended===0?'closed':'';
+  if(next!==gesture){gesture=next;since=t;held=''}
+  if(next&&held!==next&&t-since>=Math.max(65,170/gain)){held=next;chooseMode(next==='open'?2:0)}
+  message('已跟随 · '+names[mode]+' · 缩放 '+el('zoom').value+'%')
+}
+function detect(id){
+  let last=-1;
+  function tick(){
+    if(id!==session)return;
+    try{
+      if(video.readyState>=2&&video.currentTime!==last){last=video.currentTime;const t=performance.now();if(detector)trackHand(detector.detectForVideo(video,t).landmarks[0],t);else followMotion()}
+      timer=setTimeout(tick,detector?8:55)
+    }catch(error){if(detector){detector.close();detector=null;lightMode();retry.hidden=false;modelStatus.textContent='精确识别中断，可重试。';timer=setTimeout(tick,50)}else stopCamera('无法读取摄像头画面：'+error.message)}
+  }tick()
+}
+el('cam').onclick=async()=>{
+  if(el('cam').textContent!=='开启摄像头'){stopCamera('摄像头已关闭。');return}
+  const id=++session;el('cam').textContent='取消启动';message('正在请求摄像头权限…');
+  try{
+    const policy=document.permissionsPolicy||document.featurePolicy;
+    if(policy&&!policy.allowsFeature('camera'))throw Error('当前窗口限制摄像头。请用 Safari、Chrome 或 Edge 打开此页，再开启摄像头。');
+    if(!navigator.mediaDevices?.getUserMedia)throw Error('此窗口无法访问摄像头，请用系统浏览器通过 HTTPS 或 localhost 打开。');
+    const media=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user',width:{ideal:640},height:{ideal:480}},audio:false});
+    if(id!==session){media.getTracks().forEach(t=>t.stop());return}
+    stream=media;preview.hidden=false;video.srcObject=media;await video.play();
+    if(id!==session)return;
+    lightMode();initializePrecision();media.getVideoTracks()[0].onended=()=>{if(id===session)stopCamera('摄像头连接已断开，请重新开启。')};
+    el('cam').textContent='关闭摄像头';el('state').classList.add('on');detect(id)
+  }catch(e){
+    if(id===session)stopCamera(({NotAllowedError:'摄像头未获授权。请在浏览器地址栏允许摄像头；若当前窗口没有权限选项，请用系统浏览器打开。',NotFoundError:'未找到摄像头，请检查设备连接。',NotReadableError:'摄像头未能启动，请关闭占用它的应用后重试。'})[e.name]||'启动失败：'+e.message)
+  }
+};window.addEventListener('pagehide',()=>stopCamera('摄像头已关闭。'));
+
+</script></html>
+
+
+

@@ -8,3 +8,6 @@ Google MediaPipe Hand Landmarker, float16, version 1.
 Model: https://storage.googleapis.com/mediapipe-models/hand_landmarker/hand_landmarker/float16/1/hand_landmarker.task
 Documentation and model cards: https://ai.google.dev/edge/mediapipe/solutions/vision/hand_landmarker
 The model bundle is distributed unchanged as vision/hand.task. The application license covers the original application code. Third-party components retain their upstream terms.
+
+fflate 0.8.2 / Copyright Arjun Barrett. MIT license, included at vision/fflate-LICENSE.txt.
+Source: https://github.com/101arrowz/fflate
