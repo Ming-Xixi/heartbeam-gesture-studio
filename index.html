@@ -2,7 +2,7 @@
 <html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>光束心境 · 粒子爱心</title>
 <style>
 *{box-sizing:border-box}body{margin:0;background:#09090f;color:#f7f3fa;font:16px/1.5 Inter,"Microsoft YaHei",sans-serif}header{height:76px;border-bottom:1px solid #29252f;display:flex;align-items:center;justify-content:space-between;padding:0 5vw}.brand{display:flex;gap:13px;align-items:center;font-weight:700;letter-spacing:2px}.logo{background:#ff598e;color:#260d1a;border-radius:12px;width:38px;height:38px;display:grid;place-items:center;font-size:26px}.state,small{font-size:13px;color:#b5aebd}.state:before{content:"";display:inline-block;width:7px;height:7px;border-radius:100%;background:#b5acbb;margin-right:9px}.state.on:before{background:#71e8b0}main{max-width:1580px;margin:auto;padding:32px 5vw}.layout{display:grid;grid-template-columns:minmax(0,1fr) 296px;gap:20px}.stage,aside{border:1px solid #312b37;border-radius:20px;background:#15131b}.stage{position:relative;min-height:560px;overflow:hidden;background:radial-gradient(ellipse at 50% 50%,#291322,#100d17  sixty%,#0e0c13);background:radial-gradient(ellipse at 50% 52%,#291222,#100d17 62%,#0e0c13)}canvas{display:block;width:100%;height:100%;position:absolute;inset:0;touch-action:none;cursor:grab}.cap,.foot{position:absolute;pointer-events:none;left:26px}.cap{top:23px}.cap h1{font-size:clamp(26px,3vw,44px);letter-spacing:-1px;margin:4px 0;font-weight:620}.eyebrow{font:12px/1.5 Consolas,monospace;letter-spacing:3px;color:#fc8cb0}.foot{bottom:20px;color:#a99cb0;font-size:13px}.meter{position:absolute;bottom:20px;right:24px;font:13px monospace;color:#ff96b7}aside{padding:24px;display:flex;flex-direction:column;gap:18px}h2{font-size:21px;margin:0}h3{font-size:14px;margin:0 0 10px;color:#d7d0de}button{cursor:pointer;background:#231f2a;border:1px solid #38313f;color:#e7deed;border-radius:10px;font:inherit;padding:10px}button:hover{border-color:#d1799a}button:focus-visible,input:focus-visible{outline:2px solid #ff92b7;outline-offset:3px}.cam{width:100%;background:#ff6498;color:#210e18;font-weight:700;border:0;margin:10px 0}.status{font-size:13px;color:#bfb5c8;margin:0;min-height:20px}.row{display:flex;gap:6px}.row button{flex:1;font-size:14px}.row .sel{color:#ff9abe;border-color:#aa5274;background:#3a202e}.panel{border-top:1px solid #322b39;padding-top:16px}.swatch{width:32px;height:32px;border:5px solid #15131b;border-radius:50%;padding:0;margin-right:9px}.swatch.sel{outline:1px solid #e4d6e6}.scale{display:flex;justify-content:space-between}.scale output{color:#ffa0bf;font:14px monospace}input{width:100%;accent-color:#ff719e}dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:7px 12px;font-size:14px}dt{color:#ebe2ed}dd{margin:0;color:#aea3b6}.preview{position:absolute;right:14px;top:16px;width:clamp(96px,20%,160px);overflow:hidden;border-radius:10px;background:#110e15}.preview video{display:block;width:100%;transform:scaleX(-1)}.preview canvas{transform:scaleX(-1);pointer-events:none}.preview[hidden]{display:none}@media(max-width:780px){header{height:62px}main{padding:16px}.layout{grid-template-columns:1fr}.stage{min-height:440px;height:59svh}.cap{left:17px;top:15px}.foot{left:16px;font-size:12px}aside{padding:20px}.meter{right:14px}.cap h1{font-size:26px}}
-</style><header><div class="brand"><span class="logo" aria-hidden="true">♥</span>光束心境</div><span class="state" id="state">自由交互</span></header><main><div class="layout"><section class="stage"><canvas id="view" aria-label="可旋转、缩放和变形的光束粒子爱心"></canvas><div class="cap"><span class="eyebrow" lang="en">PARTICLE STUDIO</span><h1>光束粒子爱心</h1></div><div id="preview" class="preview" hidden><video id="video" playsinline muted></video><canvas id="overlay" aria-hidden="true"></canvas></div><div class="foot">拖动旋转 · 双指或滚轮缩放</div><div class="meter" id="modeLabel">凝聚</div></section><aside><div><h2>交互控制</h2><button class="cam" id="cam">开启摄像头</button><p class="status" id="status" role="status">开启后，将一只手放入画面。</p></div><div class="panel"><h3>粒子形态</h3><div class="row" id="modes"></div></div><div><h3>光束色彩</h3><div id="colors"></div></div><div><div class="scale"><h3><label for="zoom">爱心缩放</label></h3><output id="value" for="zoom">100%</output></div><input id="zoom" type="range" min="55" max="160" value="100"></div><div><div class="scale"><h3><label for="sensitivity">手势灵敏度</label></h3><output id="gainValue" for="sensitivity">1.7×</output></div><input id="sensitivity" type="range" min="0.8" max="2.5" step="0.1" value="1.7"></div><div class="panel"><h3>手势指南</h3><dl><dt>两指开合</dt><dd>拇指与食指控制大小</dd><dt>移动手掌</dt><dd>左右转向，上下倾斜</dd><dt>张开手掌</dt><dd>粒子逐渐散开</dd><dt>握拳</dt><dd>粒子重新凝聚</dd></dl></div><a style="color:#ff9ebe;text-underline-offset:4px" href="./source.zip" download>下载完整源码</a></aside></div></main>
+</style><header><div class="brand"><span class="logo" aria-hidden="true">♥</span>光束心境</div><span class="state" id="state">自由交互</span></header><main><div class="layout"><section class="stage"><canvas id="view" aria-label="可旋转、缩放和变形的光束粒子爱心"></canvas><div class="cap"><span class="eyebrow" lang="en">PARTICLE STUDIO</span><h1>光束粒子爱心</h1></div><div id="preview" class="preview" hidden><video id="video" playsinline muted></video><canvas id="overlay" aria-hidden="true"></canvas></div><div class="foot">拖动旋转 · 双指或滚轮缩放</div><div class="meter" id="modeLabel">凝聚</div></section><aside><div><h2>交互控制</h2><button class="cam" id="cam">开启摄像头</button><p class="status" id="status" role="status">开启后，将一只手放入画面。</p><p class="status" id="modelStatus"></p><button id="retry" hidden>重试精确识别</button></div><div class="panel"><h3>粒子形态</h3><div class="row" id="modes"></div></div><div><h3>光束色彩</h3><div id="colors"></div></div><div><div class="scale"><h3><label for="zoom">爱心缩放</label></h3><output id="value" for="zoom">100%</output></div><input id="zoom" type="range" min="55" max="160" value="100"></div><div><div class="scale"><h3><label for="sensitivity">手势灵敏度</label></h3><output id="gainValue" for="sensitivity">1.7×</output></div><input id="sensitivity" type="range" min="0.8" max="2.5" step="0.1" value="1.7"></div><div class="panel"><h3>手势指南</h3><dl><dt>两指开合</dt><dd>拇指与食指控制大小</dd><dt>移动手掌</dt><dd>左右转向，上下倾斜</dd><dt>张开手掌</dt><dd>粒子逐渐散开</dd><dt>握拳</dt><dd>粒子重新凝聚</dd></dl></div><a style="color:#ff9ebe;text-underline-offset:4px" href="./source.zip" download>下载完整源码</a></aside></div></main>
 <script>
 const el=id=>document.getElementById(id),canvas=el('view'),ctx=canvas.getContext('2d'),video=el('video');
 const names=['凝聚','脉动','星散'],palette=[['蔷薇粉',337],['冰川蓝',198],['紫罗兰',270],['琥珀金',35]];
@@ -34,21 +34,94 @@ const preview=el('preview'),overlay=el('overlay'),ink=overlay.getContext('2d');
 let gestureTracking=false,stream=null,detector=null,session=0,gesture='',since=0,held='',timer;
 const message=text=>{el('status').textContent=text};
 function stopCamera(text){
-  session++;gestureTracking=false;clearTimeout(timer);
+  session++;pendingLoad?.abort();pendingLoad=null;previousFrame=null;modelStatus.textContent='';retry.hidden=true;gestureTracking=false;clearTimeout(timer);
   if(stream)stream.getTracks().forEach(track=>track.stop());
   stream=null;video.srcObject=null;preview.hidden=true;
   if(detector){detector.close();detector=null}
   gesture=held='';el('cam').textContent='开启摄像头';el('state').textContent='自由交互';
   el('state').classList.remove('on');message(text)
 }
-async function createDetector(){
-  const base='./vision/';
-  const vision=await import(base+'vision.mjs');
-  const wasm=await vision.FilesetResolver.forVisionTasks(base.slice(0,-1));
-  return vision.HandLandmarker.createFromOptions(wasm,{
-    baseOptions:{modelAssetPath:base+'hand.task',delegate:'CPU'},runningMode:'VIDEO',numHands:1,
-    minHandDetectionConfidence:.45,minHandPresenceConfidence:.45,minTrackingConfidence:.45
-  });
+const modelStatus=el('modelStatus'),retry=el('retry');
+let pendingLoad=null;
+const motionCanvas=document.createElement('canvas');
+motionCanvas.width=80;motionCanvas.height=60;
+const motion=motionCanvas.getContext('2d',{willReadFrequently:true});
+let previousFrame=null;
+function followMotion(){
+  motion.drawImage(video,0,0,80,60);
+  const frame=motion.getImageData(0,0,80,60).data;
+  let count=0,sumX=0,sumY=0;
+  if(previousFrame){
+    for(let i=0;i<4800;i++){
+      const j=i*4;
+      const difference=Math.abs(frame[j]-previousFrame[j])+Math.abs(frame[j+1]-previousFrame[j+1])+Math.abs(frame[j+2]-previousFrame[j+2]);
+      if(difference>90){count++;sumX+=i%80;sumY+=Math.floor(i/80)}
+    }
+  }
+  previousFrame=frame;
+  if(count<14||count>2200)return;
+  gestureTracking=true;
+  const x=sumX/count/80,y=sumY/count/60;
+  tx=(.5-x)*4*gain;zoom(100+(.5-y)*105*gain)
+}
+async function loadPrecision(id){
+  pendingLoad?.abort();
+  const controller=new AbortController(),signal=controller.signal;
+  pendingLoad=controller;retry.hidden=true;
+  const urls=[];let watchdog;
+  const refresh=()=>{clearTimeout(watchdog);watchdog=setTimeout(()=>{controller.abort();if(current()){modelStatus.textContent='下载或启动超时，轻量控制仍可使用。';retry.hidden=false}},45000)};
+  const current=()=>id===session&&pendingLoad===controller;
+  let received=0;
+  async function readAsset(path,compressed){
+    const response=await fetch(path+(compressed?'.gz':''),{signal,cache:'force-cache'});
+    if(!response.ok)throw Error('HTTP '+response.status);
+    let bytes;
+    if(response.body){
+      const reader=response.body.getReader(),chunks=[];
+      for(;;){
+        const {done,value}=await reader.read();if(done)break;
+        chunks.push(value);received+=value.byteLength;refresh();
+        if(current())modelStatus.textContent='精确识别下载中 · '+(received/1048576).toFixed(1)+' MB';
+      }
+      bytes=new Blob(chunks)
+    }else{bytes=await response.blob();refresh()}
+    if(compressed){
+      const magic=new Uint8Array(await bytes.slice(0,2).arrayBuffer());
+      if(magic[0]===31&&magic[1]===139)return new Response(bytes.stream().pipeThrough(new DecompressionStream('gzip'))).arrayBuffer()
+    }
+    return bytes.arrayBuffer()
+  }
+  refresh();modelStatus.textContent='正在准备精确手势识别…';
+  try{
+    const vision=await import('./vision/vision.mjs');
+    const wasm=await vision.FilesetResolver.forVisionTasks('./vision');
+    if(!current()||signal.aborted)return;
+    const compressed=typeof DecompressionStream==='function';
+    const [model,bin,loader]=await Promise.all([
+      readAsset('./vision/hand.task',compressed),readAsset(wasm.wasmBinaryPath,compressed),readAsset(wasm.wasmLoaderPath,false)
+    ]);
+    if(!current()||signal.aborted)return;
+    function objectURL(bytes,type){const url=URL.createObjectURL(new Blob([bytes],{type}));urls.push(url);return url}
+    wasm.wasmBinaryPath=objectURL(bin,'application/wasm');wasm.wasmLoaderPath=objectURL(loader,'text/javascript');
+    modelStatus.textContent='下载完成，正在启用指尖识别…';
+    const ready=await vision.HandLandmarker.createFromOptions(wasm,{
+      baseOptions:{modelAssetBuffer:new Uint8Array(model),delegate:'CPU'},runningMode:'VIDEO',numHands:1,
+      minHandDetectionConfidence:.45,minHandPresenceConfidence:.45,minTrackingConfidence:.45
+    });
+    if(!current()||signal.aborted){ready.close();return}
+    detector=ready;modelStatus.textContent='';
+  }catch(error){
+    if(current()){modelStatus.textContent='精确识别未就绪，轻量控制可继续使用。';retry.hidden=false}
+    controller.abort()
+  }finally{
+    clearTimeout(watchdog);urls.forEach(url=>URL.revokeObjectURL(url));
+    if(current()){pendingLoad=null;if(!detector){modelStatus.textContent='精确识别未就绪，轻量控制可继续使用。';retry.hidden=false}}
+  }
+}
+retry.onclick=()=>{if(stream)loadPrecision(session)};
+function lightMode(){
+  previousFrame=null;gestureTracking=false;el('state').textContent='轻量手势';
+  message('固定摄像头，左右挥手转向，上下挥手缩放。')
 }
 function trackHand(p,t){
   overlay.width=video.videoWidth;overlay.height=video.videoHeight;
@@ -75,9 +148,9 @@ function detect(id){
   function tick(){
     if(id!==session)return;
     try{
-      if(video.readyState>=2&&video.currentTime!==last){last=video.currentTime;const t=performance.now();trackHand(detector.detectForVideo(video,t).landmarks[0],t)}
-      timer=setTimeout(tick,8)
-    }catch(error){stopCamera('手势识别出错：'+error.message)}
+      if(video.readyState>=2&&video.currentTime!==last){last=video.currentTime;const t=performance.now();if(detector)trackHand(detector.detectForVideo(video,t).landmarks[0],t);else followMotion()}
+      timer=setTimeout(tick,detector?8:55)
+    }catch(error){if(detector){detector.close();detector=null;lightMode();retry.hidden=false;modelStatus.textContent='精确识别中断，可重试。';timer=setTimeout(tick,50)}else stopCamera('无法读取摄像头画面：'+error.message)}
   }tick()
 }
 el('cam').onclick=async()=>{
@@ -91,10 +164,7 @@ el('cam').onclick=async()=>{
     if(id!==session){media.getTracks().forEach(t=>t.stop());return}
     stream=media;preview.hidden=false;video.srcObject=media;await video.play();
     if(id!==session)return;
-    message('正在载入手势模型，首次打开可能需要一点时间…');
-    const model=await createDetector();
-    if(id!==session){model.close();return}
-    detector=model;media.getVideoTracks()[0].onended=()=>{if(id===session)stopCamera('摄像头连接已断开，请重新开启。')};
+    lightMode();loadPrecision(id);media.getVideoTracks()[0].onended=()=>{if(id===session)stopCamera('摄像头连接已断开，请重新开启。')};
     el('cam').textContent='关闭摄像头';el('state').classList.add('on');detect(id)
   }catch(e){
     if(id===session)stopCamera(({NotAllowedError:'摄像头未获授权。请在浏览器地址栏允许摄像头；若当前窗口没有权限选项，请用系统浏览器打开。',NotFoundError:'未找到摄像头，请检查设备连接。',NotReadableError:'摄像头未能启动，请关闭占用它的应用后重试。'})[e.name]||'启动失败：'+e.message)
