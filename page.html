@@ -63,8 +63,8 @@ function followMotion(){
   const x=sumX/count/80,y=sumY/count/60;
   tx=(.5-x)*4*gain;zoom(100+(.5-y)*105*gain)
 }
-/* INLINE_GZIP_DECODER */
-const embeddedFiles=/* EMBEDDED_VISION_FILES */ {};
+
+let embeddedFiles;
 function embeddedBytes(name){
   const data=embeddedFiles[name];
   return fflate.gunzipSync(decodeBase64(data))
@@ -77,6 +77,7 @@ function decodeBase64(data){
 }
 async function initializePrecision(){
   if(detector||pendingLoad)return;
+  if(!embeddedFiles){modelStatus.textContent='正在接收网页内置模型，摄像头可先使用轻量手势。';return}
   pendingLoad=true;retry.hidden=true;modelStatus.textContent='正在初始化内置手势模型…';
   const urls=[];
   function localURL(name,type){
@@ -99,7 +100,7 @@ async function initializePrecision(){
   }finally{urls.forEach(url=>URL.revokeObjectURL(url));pendingLoad=false}
 }
 retry.onclick=initializePrecision;
-setTimeout(initializePrecision,0);
+initializePrecision();
 function lightMode(){
   previousFrame=null;gestureTracking=false;el('state').textContent='轻量手势';
   message('固定摄像头，左右挥手转向，上下挥手缩放。')
@@ -152,6 +153,11 @@ el('cam').onclick=async()=>{
   }
 };window.addEventListener('pagehide',()=>stopCamera('摄像头已关闭。'));
 
+</script>
+<script>
+/* INLINE_GZIP_DECODER */
+embeddedFiles=/* EMBEDDED_VISION_FILES */ {};
+setTimeout(initializePrecision,0);
 </script></html>
 
 
