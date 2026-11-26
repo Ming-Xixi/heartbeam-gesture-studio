@@ -64,7 +64,7 @@ function followMotion(){
   const x=sumX/count/80,y=sumY/count/60;
   tx=(.5-x)*4*gain;zoom(100+(.5-y)*105*gain)
 }
-async function loadPrecision(id){
+async function loadPrecision(id,refreshCache=false){
   pendingLoad?.abort();
   const controller=new AbortController(),signal=controller.signal;
   pendingLoad=controller;retry.hidden=true;
@@ -73,7 +73,7 @@ async function loadPrecision(id){
   const current=()=>id===session&&pendingLoad===controller;
   let received=0;
   async function readAsset(path,compressed){
-    const response=await fetch(path+(compressed?'.gz':''),{signal,cache:'force-cache'});
+    const response=await fetch(path+(compressed?'.gz':''),{signal,cache:refreshCache?'reload':'force-cache'});
     if(!response.ok)throw Error('HTTP '+response.status);
     let bytes;
     if(response.body){
@@ -93,7 +93,7 @@ async function loadPrecision(id){
   }
   refresh();modelStatus.textContent='正在准备精确手势识别…';
   try{
-    const vision=await import('./vision/vision.mjs');
+    const vision=await import('./vision/vision.mjs'+(refreshCache?'?retry='+Date.now():''));
     const wasm=await vision.FilesetResolver.forVisionTasks('./vision');
     if(!current()||signal.aborted)return;
     const compressed=typeof DecompressionStream==='function';
@@ -111,6 +111,7 @@ async function loadPrecision(id){
     if(!current()||signal.aborted){ready.close();return}
     detector=ready;modelStatus.textContent='';
   }catch(error){
+    console.warn('Hand tracking initialization',error);
     if(current()){modelStatus.textContent='精确识别未就绪，轻量控制可继续使用。';retry.hidden=false}
     controller.abort()
   }finally{
@@ -118,7 +119,7 @@ async function loadPrecision(id){
     if(current()){pendingLoad=null;if(!detector){modelStatus.textContent='精确识别未就绪，轻量控制可继续使用。';retry.hidden=false}}
   }
 }
-retry.onclick=()=>{if(stream)loadPrecision(session)};
+retry.onclick=()=>{if(stream)loadPrecision(session,true)};
 function lightMode(){
   previousFrame=null;gestureTracking=false;el('state').textContent='轻量手势';
   message('固定摄像头，左右挥手转向，上下挥手缩放。')
@@ -172,4 +173,6 @@ el('cam').onclick=async()=>{
 };window.addEventListener('pagehide',()=>stopCamera('摄像头已关闭。'));
 
 </script></html>
+
+
 
