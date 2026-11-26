@@ -14,27 +14,22 @@ function zoom(n){const v=Math.round(Math.max(55,Math.min(160,n)));el('zoom').val
 el('zoom').oninput=e=>zoom(+e.target.value);
 let gain=1.7;el('sensitivity').oninput=e=>{gain=Number(e.target.value);el('gainValue').textContent=gain.toFixed(1)+'×'};
 const points=[],stars=Array.from({length:135},()=>[Math.random(),Math.random(),Math.random()]);
-for(let i=0;i<(matchMedia('(pointer:coarse)').matches?1400:3600);i++){const a=Math.random()*Math.PI*2,b=Math.random()*Math.PI,k=Math.sin(b),r=Math.random()<.72?1:Math.sqrt(Math.random());points.push({x:Math.sin(a)**3*k*r,y:-(13*Math.cos(a)-5*Math.cos(2*a)-2*Math.cos(3*a)-Math.cos(4*a))/16*k*r,z:Math.cos(b)*.36*r,a:Math.random()*6.28,v:Math.random(),band:Math.floor(Math.random()*9)})}
+for(let i=0;i<5600;i++){const a=Math.random()*Math.PI*2,b=Math.random()*Math.PI,k=Math.sin(b),r=Math.random()<.72?1:Math.sqrt(Math.random());points.push({x:Math.sin(a)**3*k*r,y:-(13*Math.cos(a)-5*Math.cos(2*a)-2*Math.cos(3*a)-Math.cos(4*a))/16*k*r,z:Math.cos(b)*.36*r,a:Math.random()*6.28,v:Math.random(),band:Math.floor(Math.random()*9)})}
 function fitCanvas(){w=canvas.clientWidth;h=canvas.clientHeight;let d=Math.min(devicePixelRatio,matchMedia('(pointer:coarse)').matches?1.25:2);canvas.width=w*d;canvas.height=h*d;ctx.setTransform(d,0,0,d,0,0)}
 if(typeof ResizeObserver==="function")new ResizeObserver(fitCanvas).observe(canvas);
 window.addEventListener("resize",fitCanvas);fitCanvas();
-const bands=Array.from({length:9},()=>[]);points.forEach((p,i)=>{p.ray=i%16===0;bands[p.band].push(p)});
-let previous=0,averageFrame=16.7,particleStride=1,lastAdjustment=0;
+const bands=Array.from({length:9},()=>[]);points.forEach((p,i)=>{p.ray=i%16===0;p.sin=Math.sin(p.a);p.cos=Math.cos(p.a);p.depthWave=Math.sin(p.a*2);bands[p.band].push(p)});
+let previous=0;
 function frame(ms){
-if(previous&&ms-previous<100)averageFrame=averageFrame*.95+(ms-previous)*.05;
-if(ms-lastAdjustment>1200){
-  if(averageFrame>23)particleStride=Math.min(4,particleStride+1);
-  else if(averageFrame<18)particleStride=Math.max(1,particleStride-1);
-  lastAdjustment=ms
-}
 const t=ms*.001;ctx.clearRect(0,0,w,h);if(!w){requestAnimationFrame(frame);return}
 ctx.fillStyle='#c3a7c3';for(let [x,y,v] of stars){ctx.globalAlpha=.13+.32*v;ctx.fillRect(x*w,y*h,1+v,1+v)}ctx.globalAlpha=1;
 const dt=Math.min(80,Math.max(1,ms-previous));previous=ms;const response=1-Math.exp(-dt/(gestureTracking?34:85));ax+=(tx-ax)*response;ay+=(ty-ay)*response;scale+=(Number(el('zoom').value)/100-scale)*response;spread+=((mode===2?1:0)-spread)*(1-Math.exp(-dt/145));
 const rot=ax+Math.sin(t*.42)*.15,tilt=ay+.08,c=Math.cos(rot),s=Math.sin(rot),cc=Math.cos(tilt),ss=Math.sin(tilt),size=Math.min(w*.37,h*.365)*scale*(1+(mode===1?.085:.019)*Math.sin(t*(mode===1?4:2))),cx=w*.5,cy=h*.51;
+const waveXSin=Math.sin(t*.35),waveXCos=Math.cos(t*.35),waveYSin=Math.sin(t*.4),waveYCos=Math.cos(t*.4),raySin=Math.sin(t*1.6),rayCos=Math.cos(t*1.6),radiusScale=Math.max(.65,size/220);
 ctx.globalCompositeOperation='lighter';
 for(let j=0;j<9;j++){ctx.fillStyle='hsla('+(hue+(j-4)*3)+' 100% '+(49+j*4)+'% / '+(.36+j*.048)+')';ctx.strokeStyle='hsla('+hue+' 98% 64% / .25)';ctx.beginPath();
-for(let index=0;index<bands[j].length;index+=particleStride){const p=bands[j][index];let drift=spread*(.12+p.v*.65),x=p.x*(1+drift)+drift*Math.sin(p.a+t*.35),y=p.y*(1+drift)+drift*Math.cos(p.a+t*.4),z=p.z+drift*Math.sin(p.a*2),depth=z*c-x*s,X=cx+(x*c+z*s)*size,Y=cy+(y*cc-depth*ss)*size,R=(.6+p.v*1.25)*Math.max(.65,size/220);ctx.fillRect(X,Y,R,R);
-if(p.ray){let ray=(.015+p.v*.10)*(.75+.25*Math.sin(t*1.6+p.a));ctx.moveTo(X,Y);ctx.lineTo(X+(X-cx)*ray,Y+(Y-cy)*ray)}
+for(const p of bands[j]){let drift=spread*(.12+p.v*.65),x=p.x*(1+drift)+drift*(p.sin*waveXCos+p.cos*waveXSin),y=p.y*(1+drift)+drift*(p.cos*waveYCos-p.sin*waveYSin),z=p.z+drift*p.depthWave,depth=z*c-x*s,X=cx+(x*c+z*s)*size,Y=cy+(y*cc-depth*ss)*size,R=(.6+p.v*1.25)*radiusScale;ctx.fillRect(X,Y,R,R);
+if(p.ray){let ray=(.015+p.v*.10)*(.75+.25*(p.sin*rayCos+p.cos*raySin));ctx.moveTo(X,Y);ctx.lineTo(X+(X-cx)*ray,Y+(Y-cy)*ray)}
 }ctx.stroke()}ctx.globalCompositeOperation='source-over';requestAnimationFrame(frame)}requestAnimationFrame(frame);
 const pointers=new Map();let gap=0;const dist=(a,b)=>Math.hypot(a.x-b.x,a.y-b.y);
 canvas.onpointerdown=e=>{canvas.setPointerCapture(e.pointerId);pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});if(pointers.size===2)gap=dist(...pointers.values())};
